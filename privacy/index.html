@@ -6,143 +6,115 @@
   <title>Privacy Policy — Base64 Image Converter</title>
   <meta name="description" content="Privacy policy for Base64 Image Converter — open source, no tracking, your data stays in your browser."/>
   <link rel="canonical" href="https://mrlipx.github.io/base64-image-converter/privacy/"/>
+  <link rel="icon" href="/base64-image-converter/favicon.ico"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --bg: #f5f4f0; --surface: #ffffff; --border: #e2e0d8; --header-bg: #1c1917; --text: #1c1917; --text-muted: #78716c; --accent: #2563eb; --sans: 'DM Sans', sans-serif; --radius: 10px; --shadow: 0 1px 3px rgba(0,0,0,.08); }
-    body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    header { background: var(--header-bg); color: #fafaf9; position: sticky; top: 0; z-index: 50; }
-    .header-inner { max-width: 900px; margin: 0 auto; padding: 0 1.25rem; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .logo { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.05rem; color: #fafaf9; text-decoration: none; }
-    .logo:hover { opacity: .85; text-decoration: none; }
-    nav a { padding: .4rem .85rem; border-radius: 6px; font-size: .875rem; font-weight: 500; color: rgba(255,255,255,.7); transition: color .15s, background .15s; text-decoration: none; }
-    nav a:hover { color: #fff; background: rgba(255,255,255,.08); text-decoration: none; }
-    main { flex: 1; }
-    .container { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
-    .prose { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem 2.5rem; }
-    .prose h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .25rem; }
-    .prose .updated { font-size: .8125rem; color: var(--text-muted); margin-bottom: 2rem; }
-    .prose h2 { font-size: 1.1875rem; font-weight: 700; margin: 2rem 0 .6rem; letter-spacing: -.01em; }
-    .prose h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 .4rem; }
-    .prose p { font-size: .9375rem; line-height: 1.75; color: var(--text-muted); margin-bottom: .75rem; }
-    .prose ul { list-style: none; padding: 0; margin: .5rem 0 1rem; }
-    .prose ul li { font-size: .9375rem; color: var(--text-muted); line-height: 1.7; padding-left: 1.25rem; position: relative; }
-    .prose ul li::before { content: '–'; position: absolute; left: 0; color: #a8a29e; }
-    footer { background: var(--header-bg); color: rgba(255,255,255,.5); font-size: .8125rem; }
-    .footer-inner { max-width: 900px; margin: 0 auto; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem; }
-    .footer-links { display: flex; gap: 1.25rem; }
-    .footer-links a { color: rgba(255,255,255,.5); transition: color .15s; }
-    .footer-links a:hover { color: rgba(255,255,255,.85); text-decoration: none; }
-    @media (max-width: 600px) { .prose { padding: 1.25rem; } }
-  </style>
+  <link rel="stylesheet" href="/base64-image-converter/styles.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="header-inner">
-    <a href="/base64-image-converter/" class="logo">
-      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-        <rect width="26" height="26" rx="6" fill="#2563eb"/>
-        <rect x="5" y="8" width="10" height="10" rx="2" fill="white" opacity=".9"/>
-        <rect x="13" y="12" width="8" height="8" rx="2" fill="white"/>
-      </svg>
-      Base64 → Image
+    <a href="/base64-image-converter/" class="site-logo">
+      <div class="logo-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      </div>
+      Base64 Converter
     </a>
-    <nav>
+    <nav class="site-nav">
       <a href="/base64-image-converter/">B64 → Image</a>
       <a href="/base64-image-converter/image-to-base64/">Image → B64</a>
     </nav>
   </div>
 </header>
 <main>
-  <div class="container">
-    <div class="prose">
+  <div class="container-sm">
+    <div class="prose-card">
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: January 9, 2024</p>
+      <p class="doc-meta">Last updated: January 9, 2024 &nbsp;·&nbsp; <a href="https://github.com/MrLiPx/base64-image-converter" target="_blank" rel="noopener">View source on GitHub</a></p>
 
       <h2>Introduction</h2>
-      <p>Base64 Image Converter is an open-source tool hosted at <a href="https://mrlipx.github.io/base64-image-converter/">mrlipx.github.io/base64-image-converter</a>. We believe strongly in user privacy and transparency. This policy explains how the tool handles your data.</p>
+      <p>Base64 Image Converter is an open-source tool hosted at <a href="https://mrlipx.github.io/base64-image-converter/">mrlipx.github.io/base64-image-converter</a>. We believe strongly in user privacy and radical transparency. This policy explains exactly how the tool handles your data.</p>
 
       <h2>Data Collection &amp; Processing</h2>
-      <h3>Local Processing Only</h3>
+      <h3>Local processing only</h3>
       <ul>
         <li>All image conversions are processed entirely in your browser using JavaScript</li>
         <li>No images or Base64 strings are ever uploaded to any server</li>
-        <li>No data leaves your device during the conversion process</li>
-        <li>You can verify this by reviewing our open-source code on GitHub</li>
+        <li>No data leaves your device at any point during the conversion process</li>
+        <li>You can verify this by checking the browser Network tab — zero requests are made when converting</li>
       </ul>
-
-      <h3>No Storage</h3>
+      <h3>No storage</h3>
       <ul>
         <li>We do not store any images, Base64 data, or conversion history</li>
-        <li>No server-side processing is involved whatsoever</li>
-        <li>All data exists only temporarily in your browser's memory and is cleared when you leave</li>
+        <li>There is no server-side processing of any kind</li>
+        <li>All data exists only temporarily in your browser's memory and is cleared when you navigate away</li>
       </ul>
-
-      <h3>No Personal Information</h3>
+      <h3>No personal information</h3>
       <ul>
         <li>We do not collect any personal information</li>
-        <li>No account creation is required</li>
-        <li>No email addresses or identifiers are collected</li>
+        <li>No account creation or login is required or possible</li>
+        <li>No email addresses, names, or identifiers are collected</li>
       </ul>
 
       <h2>Open Source Commitment</h2>
-      <h3>Transparency</h3>
+      <div class="prose-callout">This tool is fully open source. Every line of code that runs in your browser is publicly visible. Privacy isn't a promise — it's verifiable.</div>
+      <h3>Source code</h3>
       <ul>
-        <li>Our code is fully open source under the MIT License</li>
+        <li>Licensed under the MIT License — free to use, modify, and redistribute</li>
         <li>Available on GitHub: <a href="https://github.com/MrLiPx/base64-image-converter" target="_blank" rel="noopener">github.com/MrLiPx/base64-image-converter</a></li>
-        <li>You can review, fork, or contribute to the code at any time</li>
+        <li>You can fork and self-host your own instance at any time</li>
       </ul>
-
       <h3>Community</h3>
       <ul>
         <li>Discussions and feedback: <a href="https://github.com/MrLiPx/base64-image-converter/discussions" target="_blank" rel="noopener">GitHub Discussions</a></li>
-        <li>Bug reports and feature requests via <a href="https://github.com/MrLiPx/base64-image-converter/issues" target="_blank" rel="noopener">GitHub Issues</a></li>
-        <li>Community contributions are welcome</li>
+        <li>Bug reports and feature requests: <a href="https://github.com/MrLiPx/base64-image-converter/issues" target="_blank" rel="noopener">GitHub Issues</a></li>
       </ul>
 
       <h2>Analytics &amp; Cookies</h2>
-      <h3>Minimal Analytics</h3>
+      <h3>Analytics</h3>
       <ul>
-        <li>We use GitHub Pages built-in analytics only (aggregated, anonymous page views)</li>
+        <li>We use only GitHub Pages built-in traffic analytics — aggregated, anonymous page-view counts</li>
         <li>No personal identifiers are collected</li>
-        <li>No third-party analytics scripts (e.g. Google Analytics) are loaded</li>
+        <li>No third-party analytics scripts (e.g. Google Analytics, Mixpanel) are loaded</li>
       </ul>
-
       <h3>Cookies</h3>
       <ul>
-        <li>We use only essential cookies required for the site to function</li>
+        <li>We use only essential cookies required for the site to function normally</li>
         <li>No tracking, advertising, or third-party cookies</li>
+        <li>No cookie consent banner is needed because we set no non-essential cookies</li>
       </ul>
 
       <h2>Security</h2>
       <ul>
-        <li>All conversions happen locally — end-to-end security for your data</li>
+        <li>All conversions happen locally — there is no server-side attack surface for your data</li>
         <li>The site is served over HTTPS via GitHub Pages with industry-standard TLS encryption</li>
-        <li>No server-side processing means no server-side risk</li>
+        <li>Open-source code means any security issues can be identified and fixed by the community</li>
       </ul>
 
       <h2>Compliance</h2>
-      <p>This privacy policy is designed to comply with GDPR, CCPA, and other applicable privacy regulations. Because we collect no personal data and perform no server-side processing, the compliance footprint is minimal by design.</p>
+      <p>Because we collect no personal data and perform no server-side processing, the compliance footprint is minimal by design. This policy is designed to be compatible with GDPR, CCPA, and other applicable privacy regulations.</p>
+
+      <h2>Changes to this policy</h2>
+      <ul>
+        <li>Changes are committed to the public GitHub repository with full history</li>
+        <li>The "last updated" date above reflects the most recent change</li>
+      </ul>
 
       <h2>Contact</h2>
-      <p>For privacy-related questions:</p>
+      <p>For privacy-related questions or concerns, please reach out via:</p>
       <ul>
         <li>GitHub Discussions: <a href="https://github.com/MrLiPx/base64-image-converter/discussions" target="_blank" rel="noopener">discussions</a></li>
-        <li>Open an issue: <a href="https://github.com/MrLiPx/base64-image-converter/issues" target="_blank" rel="noopener">issues</a></li>
+        <li>GitHub Issues: <a href="https://github.com/MrLiPx/base64-image-converter/issues" target="_blank" rel="noopener">issues</a></li>
       </ul>
     </div>
   </div>
 </main>
-<footer>
+<footer class="site-footer">
   <div class="footer-inner">
-    <span>© 2026 Base64 Image Converter — <a href="https://github.com/MrLiPx/base64-image-converter" target="_blank" rel="noopener" style="color:rgba(255,255,255,.5)">Open Source (MIT)</a></span>
+    <span>© 2026 Base64 Image Converter &mdash; <a href="https://github.com/MrLiPx/base64-image-converter" target="_blank" rel="noopener">Open source (MIT)</a></span>
     <div class="footer-links">
-      <a href="/base64-image-converter/terms/">Terms</a>
       <a href="/base64-image-converter/privacy/">Privacy</a>
+      <a href="/base64-image-converter/terms/">Terms</a>
     </div>
   </div>
 </footer>

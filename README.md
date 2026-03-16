@@ -10,13 +10,15 @@
 
 ### Base64 → Image
 - Paste any Base64 string (raw or Data URL) and preview the image instantly
-- Auto-detects format from magic bytes (PNG, JPEG, GIF, WebP, SVG, BMP, ICO)
-- One-click image download
-- Ctrl+Enter keyboard shortcut for quick conversion
+- **Auto-converts on paste** — no need to click a button
+- Auto-detects format from mime type or magic byte prefixes (PNG, JPEG, GIF, WebP, SVG, BMP, ICO)
+- Shows pixel dimensions, mime type, and estimated file size
+- One-click image download with correct filename/extension
+- `Ctrl`+`Enter` keyboard shortcut
 
 ### Image → Base64
-- Drag & drop or click-to-upload any image file
-- Choose between Data URL (`data:image/png;base64,…`) or raw Base64 output
+- Drag & drop or click-to-upload any image file (max 10 MB)
+- Toggle between **Data URL** (`data:image/png;base64,…`) and **Raw Base64** output
 - One-click copy to clipboard
 - Character count display
 
@@ -30,7 +32,8 @@
 | Account required | ❌ No |
 | Tracking / ads | ❌ None |
 | Open source | ✅ MIT License |
-| Works offline | ✅ Pure HTML/JS |
+| Build step required | ✅ None — pure HTML/CSS/JS |
+| Works offline (after first load) | ✅ Yes |
 | Supported formats | PNG, JPEG, GIF, WebP, SVG, BMP, ICO |
 
 All processing is done entirely in your browser using standard Web APIs (`FileReader`, `HTMLImageElement`). No data ever leaves your device.
@@ -41,7 +44,8 @@ All processing is done entirely in your browser using standard Web APIs (`FileRe
 
 ```
 base64-image-converter/
-├── index.html              # Base64 → Image converter
+├── index.html              # Base64 → Image converter (homepage)
+├── styles.css              # Shared stylesheet for all pages
 ├── image-to-base64/
 │   └── index.html          # Image → Base64 converter
 ├── privacy/
@@ -49,7 +53,13 @@ base64-image-converter/
 ├── terms/
 │   └── index.html          # Terms of service
 ├── 404.html                # Custom 404 page
-├── site.webmanifest        # PWA manifest
+├── site.webmanifest        # PWA/app manifest
+├── favicon.ico             # Favicon
+├── logo.svg                # Logo SVG
+├── image/                  # OG/social preview images
+│   ├── base64-to-image.png
+│   └── image-to-base64.png
+├── .nojekyll               # Disables Jekyll processing on GitHub Pages
 ├── LICENSE                 # MIT License
 └── README.md
 ```
@@ -63,7 +73,7 @@ base64-image-converter/
 3. Set source to **Deploy from a branch** → `main` → `/ (root)`
 4. Your site will be live at `https://<your-username>.github.io/base64-image-converter/`
 
-> **Note:** All internal links use the `/base64-image-converter/` path prefix. If you deploy at a different path, do a find-and-replace on that string.
+> **Note:** All internal links use the `/base64-image-converter/` base path. If you rename the repository, do a find-and-replace on that string across all HTML and CSS files.
 
 ---
 
@@ -75,10 +85,10 @@ No build step required — this is a pure static site.
 git clone https://github.com/MrLiPx/base64-image-converter.git
 cd base64-image-converter
 
-# Option 1: Python
+# Python
 python3 -m http.server 8080
 
-# Option 2: Node
+# Node
 npx serve .
 
 # Then open: http://localhost:8080/base64-image-converter/
@@ -92,7 +102,7 @@ Contributions are welcome! Please:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -m 'Add my feature'`)
+3. Commit your changes (`git commit -m 'Add: my feature'`)
 4. Push to the branch (`git push origin feature/my-feature`)
 5. Open a Pull Request
 
@@ -102,6 +112,4 @@ For bugs and ideas, use [GitHub Issues](https://github.com/MrLiPx/base64-image-c
 
 ## License
 
-MIT © 2026 [MrLiPx](https://github.com/MrLiPx)
-
-See [LICENSE](LICENSE) for full text.
+MIT © 2026 [MrLiPx](https://github.com/MrLiPx) — see [LICENSE](LICENSE) for full text.
