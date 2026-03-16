@@ -125,7 +125,7 @@
       box-shadow: var(--shadow);
     }
 
-    .card { animation: fadeUp 0.45s 0.14s ease both; }
+    .card    { animation: fadeUp 0.45s 0.14s ease both; }
     .out-card { animation: fadeUp 0.45s 0.22s ease both; }
 
     .card-header {
@@ -204,8 +204,8 @@
     }
 
     .url-input::placeholder { color: var(--muted); }
-    .url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,108,247,0.1); }
-    .url-input.is-error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(201,64,64,0.09); }
+    .url-input:focus        { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,108,247,0.1); }
+    .url-input.is-error     { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(201,64,64,0.09); }
 
     .btn-sm {
       font-family: var(--mono);
@@ -222,7 +222,7 @@
       transition: all 0.14s;
     }
 
-    .btn-sm:hover { background: var(--accent); color: #fff; }
+    .btn-sm:hover    { background: var(--accent); color: #fff; }
     .btn-sm:disabled { opacity: 0.45; cursor: not-allowed; }
 
     .url-msg { font-family: var(--mono); font-size: 0.7rem; margin-top: 5px; min-height: 15px; }
@@ -298,13 +298,13 @@
       transition: all 0.14s;
     }
 
-    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary      { background: var(--accent); color: #fff; }
     .btn-primary:hover { background: var(--accent-h); }
 
-    .btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--text2); }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .btn-ghost        { background: var(--surface); border: 1px solid var(--border); color: var(--text2); }
+    .btn-ghost:hover  { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
 
-    .btn-danger-soft { background: transparent; border: 1px solid transparent; color: var(--muted); }
+    .btn-danger-soft  { background: transparent; border: 1px solid transparent; color: var(--muted); }
     .btn-danger-soft:hover { color: var(--danger); background: var(--danger-bg); }
 
     .spacer { flex: 1; }
@@ -351,6 +351,118 @@
 
     .btn-pill:hover { background: var(--accent); color: #fff; }
 
+    /* ── Data URI section ── */
+    .datauri-section {
+      border-top: 1px solid var(--border);
+      padding: 11px 14px;
+      background: var(--surface2);
+    }
+
+    .datauri-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .datauri-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .datauri-prefix {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-right: 1px solid var(--border);
+      padding: 7px 10px;
+      white-space: nowrap;
+      user-select: none;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .datauri-mime {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 7px 8px;
+      min-width: 0;
+      flex: 1;
+      transition: background 0.13s;
+    }
+
+    .datauri-mime:focus { background: var(--accent-bg); }
+    .datauri-mime::placeholder { color: var(--muted); }
+
+    .datauri-sep {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--muted);
+      background: var(--surface2);
+      border-left: 1px solid var(--border);
+      padding: 7px 8px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .datauri-box {
+      display: flex;
+      gap: 0;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .datauri-value {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      color: var(--text2);
+      padding: 8px 10px;
+      word-break: break-all;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      max-height: 80px;
+      overflow-y: auto;
+      min-width: 0;
+    }
+
+    .datauri-value.is-empty { color: var(--muted); font-style: italic; }
+
+    .datauri-copy {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 8px 12px;
+      border: none;
+      border-left: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.13s;
+      writing-mode: horizontal-tb;
+      align-self: stretch;
+    }
+
+    .datauri-copy:hover { background: var(--accent-bg); }
+
     /* Image Preview */
     .img-preview {
       display: none;
@@ -385,13 +497,13 @@
       font-family: var(--mono);
       font-size: 0.68rem;
       color: var(--muted);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .img-preview-meta a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
+    .img-preview-meta a { color: var(--accent); text-decoration: none; }
     .img-preview-meta a:hover { text-decoration: underline; }
 
     /* Stats */
@@ -446,7 +558,6 @@
 
     footer a { color: var(--muted); text-decoration: none; transition: color 0.14s; }
     footer a:hover { color: var(--accent); }
-    .footer-links { display: flex; gap: 16px; }
 
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-14px); }
@@ -459,8 +570,8 @@
 
     @media (max-width: 520px) {
       .url-row { flex-direction: column; }
-      .btn-sm { width: 100%; text-align: center; }
-      .stats  { gap: 10px; }
+      .btn-sm  { width: 100%; text-align: center; }
+      .stats   { gap: 10px; }
     }
   </style>
 </head>
@@ -537,10 +648,10 @@
     </div>
 
     <div class="action-bar">
-      <button class="btn btn-primary"     onclick="run()">RUN ▶</button>
-      <button class="btn btn-ghost"       onclick="copyInput()">COPY INPUT</button>
+      <button class="btn btn-primary"      onclick="run()">RUN ▶</button>
+      <button class="btn btn-ghost"        onclick="copyInput()">COPY INPUT</button>
       <div class="spacer"></div>
-      <button class="btn btn-danger-soft" onclick="clearAll()">CLEAR</button>
+      <button class="btn btn-danger-soft"  onclick="clearAll()">CLEAR</button>
     </div>
   </div>
 
@@ -553,6 +664,7 @@
       <span class="badge"       id="outBadge">—</span>
     </div>
 
+    <!-- Raw base64 output -->
     <div class="out-body">
       <div class="out-text is-empty" id="outText">// result will appear here...</div>
       <div class="trunc-row" id="truncRow" style="display:none">
@@ -562,7 +674,37 @@
       </div>
     </div>
 
-    <!-- Image Preview -->
+    <!-- Data URI builder -->
+    <div class="datauri-section" id="dataUriSection" style="display:none">
+      <div class="datauri-header">
+        <div class="section-label" style="margin-bottom:0">Data URI (ready to use)</div>
+        <label class="check-label" style="font-size:0.68rem">
+          <input type="checkbox" id="optDataUri" checked onchange="updateDataUri()" />
+          auto-generate
+        </label>
+      </div>
+
+      <!-- Editable mime type row -->
+      <div class="datauri-row">
+        <span class="datauri-prefix">data:</span>
+        <input
+          class="datauri-mime"
+          id="dataMime"
+          type="text"
+          placeholder="image/png"
+          oninput="updateDataUri()"
+        />
+        <span class="datauri-sep">;base64,</span>
+      </div>
+
+      <!-- Full data URI display + copy -->
+      <div class="datauri-box">
+        <div class="datauri-value is-empty" id="dataUriValue">// will appear here...</div>
+        <button class="datauri-copy" onclick="copyDataUri()" title="Copy full data URI">COPY</button>
+      </div>
+    </div>
+
+    <!-- Image Preview (blob:// URL so it renders) -->
     <div class="img-preview" id="imgPreview">
       <div class="img-preview-label">Image Preview</div>
       <img id="previewImg" src="" alt="preview" />
@@ -577,7 +719,7 @@
     </div>
 
     <div class="action-bar">
-      <button class="btn btn-ghost" onclick="copyOutput()">COPY OUTPUT</button>
+      <button class="btn btn-ghost" onclick="copyOutput()">COPY BASE64</button>
       <button class="btn btn-ghost" onclick="swapIO()">⇅ SWAP</button>
       <div class="spacer"></div>
       <button class="btn btn-ghost" onclick="downloadOutput()">↓ DOWNLOAD</button>
@@ -585,11 +727,8 @@
   </div>
 
   <footer>
-    <span>base64-tool · MIT · open source</span>
-    <div class="footer-links">
-      <a href="https://github.com/your-username/base64-tool" target="_blank">GitHub ↗</a>
-      <a href="https://www.npmjs.com/package/base64-tool" target="_blank">npm ↗</a>
-    </div>
+    <span>base64-tool · MIT · open source · <a href="https://github.com/MrLiPx" target="_blank">@MrLiPx</a></span>
+    <a href="https://github.com/MrLiPx/base64-tool" target="_blank">GitHub ↗</a>
   </footer>
 
 </div>
@@ -600,17 +739,17 @@
 
 /* ── State ── */
 let mode       = 'encode';
-let fullOutput = '';
+let fullOutput = '';          // raw base64 result
 let blobUrl    = null;
 let fileMime   = '';
-const TRUNC    = 2000;   // chars shown before truncation
+const TRUNC    = 2000;
 
 /* ── Utils ── */
 const $ = id => document.getElementById(id);
 
 function fmtBytes(n) {
-  if (n < 1024)     return n + ' B';
-  if (n < 1048576)  return (n / 1024).toFixed(1) + ' KB';
+  if (n < 1024)    return n + ' B';
+  if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
   return (n / 1048576).toFixed(2) + ' MB';
 }
 
@@ -640,47 +779,6 @@ function setMode(m) {
   onInputChange();
 }
 
-/* ── Encode ── */
-function encodeInput(raw) {
-  const urlSafe = $('optUrlSafe').checked;
-  const noPad   = $('optNoPad').checked;
-
-  // readAsBinaryString gives us chars 0-255; use btoa directly.
-  // For plain UTF-8 text typed into the box, encode via encodeURIComponent path.
-  let b64;
-  const hasBinary = /[\x80-\xff]/.test(raw);
-  b64 = hasBinary ? btoa(raw) : btoa(unescape(encodeURIComponent(raw)));
-
-  if (urlSafe) b64 = b64.replace(/\+/g, '-').replace(/\//g, '_');
-  if (noPad)   b64 = b64.replace(/=+$/, '');
-  return b64;
-}
-
-/* ── Decode ── */
-function decodeInput(raw) {
-  let b64 = raw.trim().replace(/\s/g, '');
-
-  // Strip data-URL prefix
-  const dataMatch = b64.match(/^data:([^;]+);base64,(.+)$/i);
-  if (dataMatch) { fileMime = dataMatch[1]; b64 = dataMatch[2]; }
-
-  // Normalise URL-safe + padding
-  b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
-  while (b64.length % 4) b64 += '=';
-
-  const binStr = atob(b64);
-
-  // Sniff whether output is text (no control chars outside tab/LF/CR)
-  let isText = true;
-  const sniff = Math.min(binStr.length, 512);
-  for (let i = 0; i < sniff; i++) {
-    const c = binStr.charCodeAt(i);
-    if (c < 9 || (c > 13 && c < 32)) { isText = false; break; }
-  }
-
-  return { b64, binStr, isText };
-}
-
 /* ── Run ── */
 function run() {
   const raw = $('inputText').value;
@@ -688,24 +786,48 @@ function run() {
 
   try {
     if (mode === 'encode') {
-      const b64 = encodeInput(raw);
+      const urlSafe = $('optUrlSafe').checked;
+      const noPad   = $('optNoPad').checked;
+      const hasBin  = /[\x80-\xff]/.test(raw);
+      let b64 = hasBin ? btoa(raw) : btoa(unescape(encodeURIComponent(raw)));
+      if (urlSafe) b64 = b64.replace(/\+/g, '-').replace(/\//g, '_');
+      if (noPad)   b64 = b64.replace(/=+$/, '');
+
       renderOutput(b64, 'base64', raw.length, b64.length);
+      showDataUriSection(b64);
       tryImagePreview(b64);
 
     } else {
-      const { b64, binStr, isText } = decodeInput(raw);
+      let b64 = raw.trim().replace(/\s/g, '');
+
+      // Strip data-URL prefix if pasted
+      const dm = b64.match(/^data:([^;]+);base64,(.+)$/i);
+      if (dm) { fileMime = dm[1]; b64 = dm[2]; }
+
+      // Normalise
+      b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+
+      const binStr = atob(b64);
+
+      // Sniff text vs binary
+      let isText = true;
+      for (let i = 0; i < Math.min(binStr.length, 512); i++) {
+        const c = binStr.charCodeAt(i);
+        if (c < 9 || (c > 13 && c < 32)) { isText = false; break; }
+      }
 
       if (isText) {
         const text = decodeURIComponent(escape(binStr));
         renderOutput(text, 'text', b64.length, text.length);
       } else {
-        // Binary — show hex sniff summary
-        const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
-        const hex   = Array.from(bytes.slice(0, 32))
-                          .map(b => b.toString(16).padStart(2, '0')).join(' ');
-        const summary = '[binary · ' + fmtBytes(bytes.length) + ']\n\nhex (first 32 bytes):\n' + hex;
-        renderOutput(summary, 'binary', b64.length, bytes.length);
+        const bytes  = Uint8Array.from(binStr, c => c.charCodeAt(0));
+        const hex    = Array.from(bytes.slice(0, 32))
+                         .map(b => b.toString(16).padStart(2, '0')).join(' ');
+        renderOutput('[binary · ' + fmtBytes(bytes.length) + ']\n\nhex (first 32 bytes):\n' + hex, 'binary', b64.length, bytes.length);
       }
+
+      hideDataUriSection();
       tryImagePreview(b64);
     }
   } catch(e) {
@@ -717,17 +839,15 @@ function onInputChange() {
   if ($('optAuto').checked) run();
 }
 
-/* ── Output Rendering ── */
+/* ── Output ── */
 function renderOutput(text, type, inSize, outSize) {
   fullOutput = text;
   const el   = $('outText');
-  const preview = text.length > TRUNC ? text.slice(0, TRUNC) : text;
-
-  el.textContent = preview;
+  el.textContent = text.length > TRUNC ? text.slice(0, TRUNC) : text;
   el.className   = 'out-text';
 
   if (text.length > TRUNC) {
-    $('truncMsg').textContent = text.length.toLocaleString() + ' chars — showing first ' + TRUNC.toLocaleString();
+    $('truncMsg').textContent   = text.length.toLocaleString() + ' chars — showing first ' + TRUNC.toLocaleString();
     $('truncRow').style.display = 'flex';
   } else {
     $('truncRow').style.display = 'none';
@@ -749,35 +869,81 @@ function renderOutput(text, type, inSize, outSize) {
 
 function renderError(msg) {
   fullOutput = '';
-  $('outText').textContent = '// error: ' + msg;
-  $('outText').className   = 'out-text is-error';
+  $('outText').textContent    = '// error: ' + msg;
+  $('outText').className      = 'out-text is-error';
   $('truncRow').style.display = 'none';
+  hideDataUriSection();
   hidePreview();
 }
 
 function clearOutput() {
   fullOutput = '';
-  $('outText').textContent = '// result will appear here...';
-  $('outText').className   = 'out-text is-empty';
+  $('outText').textContent    = '// result will appear here...';
+  $('outText').className      = 'out-text is-empty';
   $('truncRow').style.display = 'none';
   $('sIn').textContent = $('sOut').textContent = $('sRatio').textContent = '—';
   $('sMimeWrap').style.display = 'none';
+  hideDataUriSection();
   hidePreview();
 }
 
 function showFull() {
-  $('outText').textContent = fullOutput;
+  $('outText').textContent    = fullOutput;
   $('truncRow').style.display = 'none';
 }
 
+/* ── Data URI ── */
+function showDataUriSection(b64) {
+  $('dataUriSection').style.display = 'block';
+  // Auto-set mime from fileMime or sniff
+  if (fileMime && !$('dataMime').value) {
+    $('dataMime').value = fileMime;
+  }
+  updateDataUri();
+}
+
+function hideDataUriSection() {
+  $('dataUriSection').style.display = 'none';
+  $('dataUriValue').textContent      = '// will appear here...';
+  $('dataUriValue').className        = 'datauri-value is-empty';
+}
+
+function updateDataUri() {
+  if (!$('optDataUri').checked) {
+    $('dataUriValue').textContent = '// auto-generate disabled';
+    $('dataUriValue').className   = 'datauri-value is-empty';
+    return;
+  }
+  if (!fullOutput || fullOutput.startsWith('//')) return;
+
+  const mime   = $('dataMime').value.trim() || 'application/octet-stream';
+  const uri    = 'data:' + mime + ';base64,' + fullOutput;
+  const el     = $('dataUriValue');
+  const preview = uri.length > 120 ? uri.slice(0, 120) + '…' : uri;
+  el.textContent = preview;
+  el.className   = 'datauri-value';
+  el.title       = uri; // full URI on hover
+}
+
+function copyDataUri() {
+  const mime = $('dataMime').value.trim() || 'application/octet-stream';
+  const uri  = 'data:' + mime + ';base64,' + fullOutput;
+  navigator.clipboard.writeText(uri).then(() => toast('Data URI copied!'));
+}
+
+function getDataUri() {
+  const mime = $('dataMime').value.trim() || 'application/octet-stream';
+  return 'data:' + mime + ';base64,' + fullOutput;
+}
+
 /* ── Image Preview ── */
-// Signatures of common image formats encoded in base64
 const IMG_SIGS = [
-  { prefix: '/9j/',           mime: 'image/jpeg' },
-  { prefix: 'iVBORw0KGgo',   mime: 'image/png'  },
-  { prefix: 'R0lGOD',        mime: 'image/gif'  },
-  { prefix: 'UklGR',         mime: 'image/webp' },
-  { prefix: 'PHN2Zy',        mime: 'image/svg+xml' }, // <svg
+  { prefix: '/9j/',          mime: 'image/jpeg'    },
+  { prefix: 'iVBORw0KGgo',  mime: 'image/png'     },
+  { prefix: 'R0lGOD',       mime: 'image/gif'     },
+  { prefix: 'UklGR',        mime: 'image/webp'    },
+  { prefix: 'PHN2Zy',       mime: 'image/svg+xml' },
+  { prefix: 'AAABAA',       mime: 'image/x-icon'  },
 ];
 
 function tryImagePreview(b64clean) {
@@ -789,18 +955,27 @@ function tryImagePreview(b64clean) {
   }
   if (!mime || !mime.startsWith('image/')) { hidePreview(); return; }
 
+  // Auto-fill the mime field
+  if (!$('dataMime').value) $('dataMime').value = mime;
+  updateDataUri();
+
   revokeBlob();
   try {
     const norm = b64clean.replace(/-/g, '+').replace(/_/g, '/');
-    const bin  = atob(norm.replace(/=+$/, '') + '='.repeat((4 - norm.length % 4) % 4));
+    const pad  = norm + '='.repeat((4 - norm.length % 4) % 4);
+    const bin  = atob(pad);
     const buf  = Uint8Array.from(bin, c => c.charCodeAt(0));
     const blob = new Blob([buf], { type: mime });
     blobUrl    = URL.createObjectURL(blob);
 
-    $('previewImg').src = blobUrl;
-    $('previewMeta').innerHTML =
-      mime + ' · ' + fmtBytes(blob.size) +
-      ' · <a href="' + blobUrl + '" target="_blank">open blob:// ↗</a>';
+    const img     = $('previewImg');
+    img.src       = blobUrl;
+    img.onload    = () => {
+      $('previewMeta').innerHTML =
+        mime + ' · ' + fmtBytes(blob.size) +
+        ' · ' + img.naturalWidth + '×' + img.naturalHeight + 'px' +
+        ' · <a href="' + blobUrl + '" target="_blank">open blob:// ↗</a>';
+    };
     $('imgPreview').classList.add('visible');
   } catch { hidePreview(); }
 }
@@ -831,24 +1006,24 @@ async function fetchUrl() {
   btn.disabled = true;
   setUrlMsg('loading', '● Fetching…');
   fileMime = '';
+  $('dataMime').value = '';
 
   try {
     const res = await fetch(raw, { signal: AbortSignal.timeout(12000) });
     if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
 
-    const ct  = res.headers.get('content-type') || '';
+    const ct = res.headers.get('content-type') || '';
     fileMime  = ct.split(';')[0].trim();
+    if (fileMime) $('dataMime').value = fileMime;
 
-    const buf  = await res.arrayBuffer();
-    const bin  = String.fromCharCode(...new Uint8Array(buf));
-    $('inputText').value = bin;
-
+    const buf = await res.arrayBuffer();
+    $('inputText').value = String.fromCharCode(...new Uint8Array(buf));
     setUrlMsg('ok', '✓ ' + fmtBytes(buf.byteLength) + ' from ' + urlObj.hostname);
     onInputChange();
   } catch(e) {
     inp.classList.add('is-error');
-    const why = e.name === 'TimeoutError'       ? 'request timed out'
-              : e.message.includes('fetch')     ? 'network error or CORS blocked'
+    const why = e.name === 'TimeoutError'    ? 'request timed out'
+              : e.message.includes('fetch')  ? 'network error or CORS blocked'
               : e.message;
     setUrlMsg('err', '⚠ ' + why);
   } finally {
@@ -866,6 +1041,7 @@ function setUrlMsg(type, text) {
 function loadFile(file) {
   if (!file) return;
   fileMime = file.type || '';
+  if (fileMime) $('dataMime').value = fileMime;
   const reader = new FileReader();
   reader.onload  = e => {
     $('inputText').value = e.target.result;
@@ -873,7 +1049,6 @@ function loadFile(file) {
     onInputChange();
   };
   reader.onerror = () => toast('Error reading file.');
-  // readAsBinaryString preserves all 256 byte values for btoa()
   reader.readAsBinaryString(file);
 }
 
@@ -889,7 +1064,7 @@ dz.addEventListener('drop', e => {
 /* ── Actions ── */
 function copyOutput() {
   if (!fullOutput || fullOutput.startsWith('//')) return;
-  navigator.clipboard.writeText(fullOutput).then(() => toast('Copied!'));
+  navigator.clipboard.writeText(fullOutput).then(() => toast('Base64 copied!'));
 }
 
 function copyInput() {
@@ -902,6 +1077,7 @@ function clearAll() {
   $('inputText').value = '';
   $('urlInput').value  = '';
   $('urlInput').classList.remove('is-error');
+  $('dataMime').value  = '';
   setUrlMsg('', '');
   fileMime = '';
   clearOutput();
@@ -911,25 +1087,24 @@ function swapIO() {
   if (!fullOutput || fullOutput.startsWith('//')) return;
   $('inputText').value = fullOutput;
   fileMime = '';
+  $('dataMime').value  = '';
   setMode(mode === 'encode' ? 'decode' : 'encode');
   toast('Swapped ⇅');
 }
 
 function downloadOutput() {
   if (!fullOutput || fullOutput.startsWith('//')) return;
-
   let blob, name;
   if (mode === 'encode') {
     blob = new Blob([fullOutput], { type: 'text/plain' });
     name = 'encoded.b64';
   } else {
-    // Decode back to binary for download
     try {
       const src = $('inputText').value.trim().replace(/\s/g, '');
       const b64 = src.replace(/-/g,'+').replace(/_/g,'/');
       const bin = atob(b64 + '='.repeat((4 - b64.length % 4) % 4));
       const buf = Uint8Array.from(bin, c => c.charCodeAt(0));
-      const ext = fileMime ? ('.' + (fileMime.split('/')[1] || 'bin')) : '.bin';
+      const ext = fileMime ? '.' + (fileMime.split('/')[1] || 'bin') : '.bin';
       blob = new Blob([buf], { type: fileMime || 'application/octet-stream' });
       name = 'decoded' + ext;
     } catch {
@@ -937,7 +1112,6 @@ function downloadOutput() {
       name = 'decoded.txt';
     }
   }
-
   const url = URL.createObjectURL(blob);
   const a   = Object.assign(document.createElement('a'), { href: url, download: name });
   a.click();
