@@ -1,8 +1,7 @@
 /* ================================================================
    encoder.js — Image → Base64 converter logic
-   Uses CSS background-image on a div for the preview panel.
-   The blob: URL is set as background-image so no <img> tag is
-   needed — browser renders it like a normal CSS background.
+   Supports ?import=<url> query param to auto-load an image from URL.
+   Preview uses a regular <img> tag with blob: URL src.
    ================================================================ */
 (function () {
   'use strict';
@@ -22,8 +21,7 @@
       if (!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over');
     });
     dz.addEventListener('drop', function (e) {
-      e.preventDefault();
-      dz.classList.remove('drag-over');
+      e.preventDefault(); dz.classList.remove('drag-over');
       var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
       if (file) handleFile(file);
       else showToast('Please drop an image file', 'error');
@@ -35,100 +33,101 @@
       }
     });
 
-    /* Paste from clipboard anywhere on page */
+    /* Paste image from clipboard */
     document.addEventListener('paste', function (e) {
       var items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData) || {}).items || [];
       for (var i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
-          handleFile(items[i].getAsFile());
-          break;
+          handleFile(items[i].getAsFile()); break;
         }
       }
     });
+
+    /* ── Handle ?import=<url> query parameter ── */
+    checkImportParam();
   });
 
-  /* ── Handle file ── */
+  /* ── Auto-import from ?import= URL param ── */
+  function checkImportParam() {
+    var params = new URLSearchParams(window.location.search);
+    var importUrl = params.get('import');
+    if (!importUrl) return;
+
+    /* Remove ?import= from the address bar immediately — clean URL */
+    try {
+      var clean = window.location.pathname + window.location.hash;
+      history.replaceState(null, '', clean);
+    } catch (e) { /* ignore */ }
+
+    showToast('Loading image from URL\u2026', 'info');
+
+    fetch(importUrl)
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.blob();
+      })
+      .then(function (blob) {
+        /* Treat the fetched blob as if it were a dropped file */
+        var mime = blob.type || 'image/png';
+        var filename = importUrl.split('/').pop().split('?')[0] || 'imported-image';
+        var file = new File([blob], filename, { type: mime });
+        handleFile(file);
+      })
+      .catch(function (err) {
+        showToast('Could not load image: ' + err.message, 'error');
+      });
+  }
+
+  /* ── Handle file (from drop, click, paste, or URL import) ── */
   function handleFile(file) {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      showToast('Please select an image file', 'error');
-      return;
+      showToast('Please select an image file', 'error'); return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      showToast('File too large \u2014 max 10 MB', 'error');
-      return;
+      showToast('File too large \u2014 max 10 MB', 'error'); return;
     }
 
     /* Revoke previous blob URL */
     if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
 
-    /* Create blob: URL — instant reference, no encoding needed */
+    /* Create blob: URL — used for the <img> src, instant render */
     _blobUrl = URL.createObjectURL(file);
 
-    /* Render background-image preview immediately using blob: URL */
-    renderBgPreview(_blobUrl);
+    /* Show <img> preview immediately using blob: URL */
+    var thumb = document.getElementById('dz-thumb');
+    thumb.src   = _blobUrl;
+    thumb.style.display = 'block';
+    thumb.style.cursor  = 'pointer';
+    thumb.title = 'Click to open in new tab';
+    thumb.onclick = function () {
+      window.open(_blobUrl, '_blank', 'noopener,noreferrer');
+    };
 
-    /* Blob URL link */
     renderBlobLink(_blobUrl);
 
-    /* Update drop zone label */
     var dzTitle = document.querySelector('.dz-title');
     if (dzTitle) dzTitle.textContent = file.name;
 
-    /* FileReader runs in background to produce base64 output */
+    /* FileReader runs in background to produce the base64 output */
     var reader = new FileReader();
     reader.onload = function (e) {
       _dataUrl = e.target.result;
-
       document.getElementById('copy-btn').disabled  = false;
       document.getElementById('clear-btn').disabled = false;
-
       renderOutput();
-
-      var sizeStr = file.size < 1024 * 1024
+      var sizeStr = file.size < 1048576
         ? Math.round(file.size / 1024) + ' KB'
-        : (file.size / 1024 / 1024).toFixed(1) + ' MB';
+        : (file.size / 1048576).toFixed(1) + ' MB';
       showToast('Image loaded \u2014 ' + sizeStr, 'success');
     };
-    reader.onerror = function () {
-      showToast('Failed to read file', 'error');
-    };
+    reader.onerror = function () { showToast('Failed to read file', 'error'); };
     reader.readAsDataURL(file);
   }
 
-  /* Expose so the inline onchange handler can call it */
   window.handleFile = function (file) { handleFile(file); };
 
-  /* ── Render preview as CSS background-image div ── */
-  function renderBgPreview(url) {
-    var container = document.getElementById('dz-thumb-wrap');
-    if (!container) return;
-
-    /* Get or create the background div */
-    var bgDiv = container.querySelector('.bg-preview');
-    if (!bgDiv) {
-      bgDiv = document.createElement('div');
-      bgDiv.className = 'bg-preview bg-preview--encoder';
-      bgDiv.setAttribute('role', 'img');
-      bgDiv.setAttribute('aria-label', 'Preview of uploaded image');
-      bgDiv.title = 'Click to open in new tab';
-      bgDiv.addEventListener('click', function () {
-        if (_blobUrl) window.open(_blobUrl, '_blank', 'noopener,noreferrer');
-      });
-      container.appendChild(bgDiv);
-    }
-
-    /* Set the blob: URL as background-image — fast, no base64 in DOM */
-    bgDiv.style.backgroundImage    = 'url("' + url + '")';
-    bgDiv.style.backgroundRepeat   = 'no-repeat';
-    bgDiv.style.backgroundSize     = 'contain';
-    bgDiv.style.backgroundPosition = 'center';
-    bgDiv.style.backgroundAttachment = 'local'; /* scrolls with content */
-
-    container.style.display = '';
-  }
-
-  /* ── Render blob: URL as clickable link ── */
+  /* ── Blob link ── */
   function renderBlobLink(url) {
     var wrap = document.getElementById('blob-link-wrap');
     if (!wrap) return;
@@ -154,8 +153,7 @@
   function renderOutput() {
     if (!_dataUrl) return;
     var out = _fmt === 'raw' && _dataUrl.includes(',')
-      ? _dataUrl.split(',')[1]
-      : _dataUrl;
+      ? _dataUrl.split(',')[1] : _dataUrl;
     var ta = document.getElementById('b64output');
     ta.value = out;
     var len = out.length;
@@ -164,61 +162,39 @@
       Math.round(len * 0.75 / 1024).toLocaleString() + ' KB decoded)';
   }
 
-  /* ── Copy to clipboard ── */
+  /* ── Copy ── */
   window.copyOutput = function () {
     var val = document.getElementById('b64output').value;
     if (!val) { showToast('Nothing to copy', 'error'); return; }
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(val)
         .then(function () { showToast('Copied to clipboard', 'success'); })
-        .catch(function ()  { fallbackCopy(); });
-    } else {
-      fallbackCopy();
-    }
+        .catch(fallbackCopy);
+    } else { fallbackCopy(); }
   };
-
   function fallbackCopy() {
     var ta = document.getElementById('b64output');
-    ta.select();
-    ta.setSelectionRange(0, ta.value.length);
-    try {
-      document.execCommand('copy');
-      showToast('Copied to clipboard', 'success');
-    } catch (e) {
-      showToast('Copy failed \u2014 select and copy manually', 'error');
-    }
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    try { document.execCommand('copy'); showToast('Copied to clipboard', 'success'); }
+    catch (e) { showToast('Copy failed \u2014 select and copy manually', 'error'); }
   }
 
   /* ── Clear ── */
   window.clearUploader = function () {
-    _dataUrl = null;
-    _fmt     = 'dataurl';
-
+    _dataUrl = null; _fmt = 'dataurl';
     if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
-
     var fi = document.getElementById('file-input');
     if (fi) fi.value = '';
-
-    /* Hide bg-preview container */
-    var container = document.getElementById('dz-thumb-wrap');
-    if (container) {
-      container.style.display = 'none';
-      var bgDiv = container.querySelector('.bg-preview');
-      if (bgDiv) bgDiv.style.backgroundImage = '';
-    }
-
+    var thumb = document.getElementById('dz-thumb');
+    thumb.style.display = 'none'; thumb.src = ''; thumb.onclick = null;
     var blobWrap = document.getElementById('blob-link-wrap');
     if (blobWrap) { blobWrap.innerHTML = ''; blobWrap.style.display = 'none'; }
-
-    document.getElementById('b64output').value       = '';
+    document.getElementById('b64output').value        = '';
     document.getElementById('char-count').textContent = '';
-
     var dzTitle = document.querySelector('.dz-title');
     if (dzTitle) dzTitle.innerHTML = 'Drop image here, or <span class="dz-link">click to browse</span>';
-
     document.getElementById('copy-btn').disabled  = true;
     document.getElementById('clear-btn').disabled = true;
-
     document.querySelectorAll('.fmt-toggle label').forEach(function (l) {
       l.classList.toggle('active', l.dataset.val === 'dataurl');
     });
@@ -227,5 +203,4 @@
   window.addEventListener('beforeunload', function () {
     if (_blobUrl) URL.revokeObjectURL(_blobUrl);
   });
-
 })();

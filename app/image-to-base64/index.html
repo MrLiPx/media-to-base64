@@ -22,7 +22,6 @@
   <link rel="icon" href="/base64-image-converter/assets/logo.png" type="image/png"/>
   <link rel="apple-touch-icon" href="/base64-image-converter/assets/logo.png"/>
   <link rel="manifest" href="/base64-image-converter/site.webmanifest"/>
-  <!-- Performance: preload critical assets -->
   <link rel="preload" href="/base64-image-converter/assets/styles_Z5jCVG3c.css" as="style"/>
   <link rel="preload" href="/base64-image-converter/assets/core_YwCdbQMX.js" as="script"/>
   <link rel="preload" href="/base64-image-converter/assets/encoder_JKX22aUs.js" as="script"/>
@@ -68,17 +67,14 @@
       <div class="card-icon" aria-hidden="true"><i class="fi fi-rr-upload"></i></div>
       <div>
         <div class="card-title">Convert Image → Base64</div>
-        <div class="card-subtitle">Drop an image, click to browse, or paste from clipboard</div>
+        <div class="card-subtitle">Drop, click, paste, or use <code>?import=&lt;url&gt;</code> to auto-load</div>
       </div>
     </div>
 
-    <!-- bg-preview wrapper — shown via CSS background-image using blob: URL -->
-    <!-- middle-click / Ctrl+click on the div opens image in background tab -->
-    <div id="dz-thumb-wrap" style="display:none" aria-label="Image preview">
-      <!-- .bg-preview div injected here by encoder.js -->
-    </div>
+    <!-- Preview image using blob: URL src — big, clickable, opens in new tab -->
+    <img id="dz-thumb" class="dz-thumb" alt="Preview of selected image" style="display:none"/>
 
-    <!-- Blob URL clickable link -->
+    <!-- Blob URL link -->
     <div id="blob-link-wrap" aria-label="Blob preview URL" style="display:none"></div>
 
     <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop image here or click to browse" style="margin-top:1rem">
@@ -132,9 +128,9 @@
         <p>Hit <kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">V</kbd> anywhere on the page to paste a copied image directly — no file dialog needed.</p>
       </article>
       <article class="feat-card" role="listitem">
-        <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-code-window"></i></div>
-        <h3>Data URL or Raw Base64</h3>
-        <p>Toggle between a full <code>data:image/png;base64,…</code> URL or just the raw Base64 — whichever your project needs.</p>
+        <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-link"></i></div>
+        <h3>Import from URL</h3>
+        <p>Add <code>?import=https://example.com/image.png</code> to the page URL to auto-load any image. The param is removed from the address bar after loading.</p>
       </article>
       <article class="feat-card" role="listitem">
         <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-copy"></i></div>

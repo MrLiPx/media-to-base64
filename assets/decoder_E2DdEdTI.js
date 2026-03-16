@@ -1,8 +1,6 @@
 /* ================================================================
    decoder.js — Base64 → Image converter logic
-   Uses background-image CSS on a div for the preview panel.
-   The blob: URL is set as background-image, so the browser
-   renders it exactly like a normal background — no <img> tag.
+   Decodes to Blob, previews via blob: URL with a regular <img> tag
    ================================================================ */
 (function () {
   'use strict';
@@ -36,25 +34,18 @@
 
   /* ── Revoke previous blob URL ── */
   function revokeBlob() {
-    if (_blobUrl) {
-      URL.revokeObjectURL(_blobUrl);
-      _blobUrl = null;
-    }
+    if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
   }
 
   /* ── Convert ── */
   window.convertB64 = function () {
-    var raw    = (document.getElementById('b64input').value || '').trim();
-    var errEl  = document.getElementById('err-box');
+    var raw   = (document.getElementById('b64input').value || '').trim();
+    var errEl = document.getElementById('err-box');
     errEl.classList.remove('visible');
 
-    if (!raw) {
-      showToast('Paste a Base64 string first', 'error');
-      return;
-    }
+    if (!raw) { showToast('Paste a Base64 string first', 'error'); return; }
 
     var mime, b64clean;
-
     if (raw.startsWith('data:')) {
       var match = raw.match(/^data:([\w\/\+\-\.]+);base64,(.+)$/s);
       if (!match) { errEl.classList.add('visible'); return; }
@@ -63,8 +54,7 @@
     } else {
       b64clean = raw.replace(/\s+/g, '');
       if (!/^[A-Za-z0-9+/]*={0,2}$/.test(b64clean)) {
-        errEl.classList.add('visible');
-        return;
+        errEl.classList.add('visible'); return;
       }
       mime = detectMime(b64clean);
     }
@@ -76,33 +66,31 @@
     _blobUrl = URL.createObjectURL(blob);
     _mime    = mime;
 
-    /* Update blob URL link */
     renderBlobLink(_blobUrl);
 
-    /* Use an offscreen Image() only to get natural dimensions — no DOM insertion */
-    var probe = new Image();
-    probe.onload = function () {
-      renderPreview(blob, mime, probe.naturalWidth, probe.naturalHeight);
+    var img = new Image();
+    img.onload = function () {
+      renderPreview(img, blob, mime);
       document.getElementById('dl-btn').disabled = false;
       showToast('Converted successfully', 'success');
     };
-    probe.onerror = function () {
-      /* SVG: dimensions not available, render anyway */
+    img.onerror = function () {
       if (mime === 'image/svg+xml') {
-        renderPreview(blob, mime, 0, 0);
+        var svgImg = new Image();
+        svgImg.src = _blobUrl;
+        renderPreviewImg(svgImg, blob, mime, 0, 0);
         document.getElementById('dl-btn').disabled = false;
         showToast('Converted successfully', 'success');
       } else {
-        revokeBlob();
-        _mime = null;
+        revokeBlob(); _mime = null;
         errEl.classList.add('visible');
         document.getElementById('dl-btn').disabled = true;
       }
     };
-    probe.src = _blobUrl;
+    img.src = _blobUrl;
   };
 
-  /* ── Render blob: URL as a clickable link ── */
+  /* ── Blob link ── */
   function renderBlobLink(url) {
     var wrap = document.getElementById('blob-link-wrap');
     if (!wrap) return;
@@ -115,82 +103,55 @@
     wrap.style.display = '';
   }
 
-  /* ── Render preview as CSS background-image div ── */
-  function renderPreview(blob, mime, w, h) {
+  /* ── Render <img> preview ── */
+  function renderPreview(imgEl, blob, mime) {
+    imgEl.alt   = 'Converted image';
+    imgEl.title = 'Click to open in new tab';
+    imgEl.style.cssText = 'max-width:100%;max-height:520px;display:block;margin:1.25rem auto;border-radius:6px;cursor:pointer;';
+    imgEl.addEventListener('click', function () {
+      window.open(_blobUrl, '_blank', 'noopener,noreferrer');
+    });
+    renderPreviewImg(imgEl, blob, mime, imgEl.naturalWidth, imgEl.naturalHeight);
+  }
+
+  function renderPreviewImg(imgEl, blob, mime, w, h) {
     var area  = document.getElementById('preview-area');
     var ph    = document.getElementById('preview-ph');
     var meta  = document.getElementById('img-meta');
     var badge = document.getElementById('fmt-badge');
 
-    /* Remove any previous bg-preview div */
-    var old = area.querySelector('.bg-preview');
+    var old = area.querySelector('img');
     if (old) old.remove();
-
     ph.style.display = 'none';
     area.classList.add('loaded');
+    area.insertBefore(imgEl, meta);
 
-    /* Create a div that shows the image via background-image */
-    var bgDiv = document.createElement('div');
-    bgDiv.className = 'bg-preview';
-    bgDiv.setAttribute('role', 'img');
-    bgDiv.setAttribute('aria-label', 'Converted image preview');
-    bgDiv.title = 'Click to open in new tab';
-
-    /* Set background-image to the blob: URL */
-    bgDiv.style.backgroundImage  = 'url("' + _blobUrl + '")';
-    bgDiv.style.backgroundRepeat = 'no-repeat';
-    bgDiv.style.backgroundSize   = 'contain';
-    bgDiv.style.backgroundPosition = 'center';
-
-    /* Click opens blob URL in a new background tab */
-    bgDiv.addEventListener('click', function () {
-      window.open(_blobUrl, '_blank', 'noopener,noreferrer');
-    });
-
-    area.insertBefore(bgDiv, meta);
-
-    /* Format badge */
-    var extMap = {
-      'jpeg': 'JPG', 'png': 'PNG', 'gif': 'GIF',
-      'webp': 'WebP', 'svg+xml': 'SVG', 'bmp': 'BMP', 'x-icon': 'ICO'
-    };
-    var rawExt = mime.split('/')[1] || '';
-    badge.textContent = extMap[rawExt] || rawExt.toUpperCase();
+    var extMap = { 'jpeg':'JPG','png':'PNG','gif':'GIF','webp':'WebP','svg+xml':'SVG','bmp':'BMP','x-icon':'ICO' };
+    badge.textContent = extMap[mime.split('/')[1]] || mime.split('/')[1].toUpperCase();
     badge.classList.add('visible');
 
-    /* Meta bar */
-    var bytes   = blob.size;
-    var sizeStr = bytes < 1024 * 1024
-      ? Math.round(bytes / 1024) + ' KB'
-      : (bytes / 1024 / 1024).toFixed(1) + ' MB';
+    var sizeStr = blob.size < 1048576
+      ? Math.round(blob.size / 1024) + ' KB'
+      : (blob.size / 1048576).toFixed(1) + ' MB';
 
-    var dimEl  = document.getElementById('m-dim');
-    var typeEl = document.getElementById('m-type');
-    var sizeEl = document.getElementById('m-size');
-
+    var dimEl = document.getElementById('m-dim');
     if (w && h) {
-      dimEl.innerHTML  = '<i class="fi fi-rr-compress" aria-hidden="true"></i> ' + w + ' \u00d7 ' + h + 'px';
+      dimEl.innerHTML = '<i class="fi fi-rr-compress" aria-hidden="true"></i> ' + w + ' \u00d7 ' + h + 'px';
       dimEl.style.display = '';
-    } else {
-      dimEl.style.display = 'none';
-    }
-    typeEl.innerHTML = '<i class="fi fi-rr-file-image" aria-hidden="true"></i> ' + mime;
-    sizeEl.innerHTML = '<i class="fi fi-rr-disk" aria-hidden="true"></i> ' + sizeStr;
+    } else { dimEl.style.display = 'none'; }
+    document.getElementById('m-type').innerHTML = '<i class="fi fi-rr-file-image" aria-hidden="true"></i> ' + mime;
+    document.getElementById('m-size').innerHTML = '<i class="fi fi-rr-disk" aria-hidden="true"></i> ' + sizeStr;
     meta.classList.add('visible');
   }
 
   /* ── Download ── */
   window.downloadImage = function () {
     if (!_blobUrl || !_mime) return;
-    var extMap = { 'jpeg': 'jpg', 'svg+xml': 'svg', 'x-icon': 'ico' };
-    var rawExt = _mime.split('/')[1] || 'png';
-    var ext    = extMap[rawExt] || rawExt;
-    var a      = document.createElement('a');
-    a.href     = _blobUrl;
-    a.download = 'converted-image.' + ext;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    var extMap = { 'jpeg':'jpg','svg+xml':'svg','x-icon':'ico' };
+    var ext = extMap[_mime.split('/')[1]] || _mime.split('/')[1];
+    var a = document.createElement('a');
+    a.href = _blobUrl; a.download = 'converted-image.' + ext;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     showToast('Downloading image\u2026', 'download');
   };
 
@@ -199,15 +160,11 @@
     var ta = document.getElementById('b64input');
     if (ta) ta.value = '';
     document.getElementById('err-box').classList.remove('visible');
-
     var blobWrap = document.getElementById('blob-link-wrap');
     if (blobWrap) { blobWrap.innerHTML = ''; blobWrap.style.display = 'none'; }
-
-    revokeBlob();
-    _mime = null;
-
+    revokeBlob(); _mime = null;
     var area = document.getElementById('preview-area');
-    var old  = area.querySelector('.bg-preview');
+    var old  = area.querySelector('img');
     if (old) old.remove();
     document.getElementById('preview-ph').style.display = '';
     document.getElementById('img-meta').classList.remove('visible');
@@ -216,21 +173,15 @@
     document.getElementById('dl-btn').disabled = true;
   };
 
-  /* ── Keyboard: Ctrl/Cmd+Enter converts; auto-convert on paste ── */
+  /* ── Keyboard: Ctrl/Cmd+Enter; auto-convert on paste ── */
   document.addEventListener('DOMContentLoaded', function () {
     var ta = document.getElementById('b64input');
     if (!ta) return;
     ta.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        convertB64();
-      }
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); convertB64(); }
     });
-    ta.addEventListener('paste', function () {
-      setTimeout(convertB64, 80);
-    });
+    ta.addEventListener('paste', function () { setTimeout(convertB64, 80); });
   });
 
   window.addEventListener('beforeunload', revokeBlob);
-
 })();

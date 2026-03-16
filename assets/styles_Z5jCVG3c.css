@@ -765,74 +765,21 @@ section{padding:1.5rem 0}
 #toast.toast-error{background:#7f1d1d;border-color:rgba(252,165,165,.2)}
 #toast.toast-download{background:#1e3a5f;border-color:rgba(147,197,253,.2)}
 
-/* ── Clickable preview images (legacy fallback) ── */
-
-/* ── Override old dz-thumb rules (replaced above) ── */
-#dz-thumb{
-  /* Inherits .dz-thumb — just ensuring specificity */
-  display:none;
-}
-
-/* ── Performance hint: decode images async ── */
-img{
-  content-visibility:auto;
-}
-
-/* ── Background-image preview div (replaces <img> tags for previews) ── */
-/* Uses CSS background-image with blob: URL — no base64 in DOM attributes */
-.bg-preview{
-  width:100%;
-  min-height:280px;
-  max-height:520px;
-  border-radius:var(--r-lg);
-  border:1px solid var(--c-border);
-  position:relative;
-  overflow:hidden;
+/* ── Clickable preview images ── */
+#preview-area img{
   cursor:pointer;
-  transition:opacity var(--t), box-shadow var(--t);
-  box-shadow:var(--sh-sm);
-  /* The actual image is set via JS as background-image */
-  background-repeat:no-repeat;
-  background-size:contain;
-  background-position:center;
+  transition:opacity var(--t),box-shadow var(--t);
 }
-/* Checkerboard pattern sits BEHIND the image via ::before */
-.bg-preview::before{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    repeating-conic-gradient(var(--c-surface-2) 0% 25%, var(--c-surface) 0% 50%)
-    0 0 / 16px 16px;
-  z-index:0;
-}
-.bg-preview:hover{
+#preview-area img:hover{
   opacity:.93;
   box-shadow:var(--sh-lg);
 }
-/* Encoder-specific: bigger preview above the dropzone */
-.bg-preview--encoder{
-  min-height:320px;
-  max-height:480px;
-  border-radius:var(--r-xl);
+#dz-thumb{
+  cursor:pointer;
+  transition:opacity var(--t),box-shadow var(--t);
 }
-
-/* dz-thumb-wrap: the container for the encoder bg-preview */
-#dz-thumb-wrap{
-  margin:0 0 1rem;
-  border-radius:var(--r-xl);
-  overflow:hidden;
-}
-
-/* ── preview-area uses bg-preview inside it ── */
-.preview-area .bg-preview{
-  width:100%;
-  min-height:280px;
-  border-radius:0; /* preview-area already has radius */
-  border:none;
-  box-shadow:none;
-  margin:0;
-}
-.preview-area .bg-preview:hover{
+#dz-thumb:hover{
   opacity:.93;
-  box-shadow:none;
+  box-shadow:var(--sh-lg);
 }
+
