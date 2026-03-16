@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Image to Base64 Converter — Free, Private &amp; Instant</title>
-  <meta name="description" content="Upload, drag-and-drop, or paste any image and get its Base64 string or Data URL instantly. One-click copy. Runs 100% in your browser — no server, no signup."/>
+  <meta name="description" content="Upload, drag-and-drop, paste, or import from URL any image and get its Base64 string or Data URL instantly. One-click copy. Runs 100% in your browser."/>
   <meta name="keywords" content="image to base64, encode image base64, base64 encoder, data url generator, png to base64, jpeg to base64"/>
   <meta name="author" content="MrLiPx"/>
   <link rel="canonical" href="https://mrlipx.github.io/base64-image-converter/app/image-to-base64/"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://mrlipx.github.io/base64-image-converter/app/image-to-base64/"/>
   <meta property="og:title" content="Image to Base64 Converter — Free &amp; Private"/>
-  <meta property="og:description" content="Upload any image and get its Base64 string or Data URL instantly. 100% private, runs in-browser."/>
+  <meta property="og:description" content="Upload any image or import from URL and get its Base64 string instantly. 100% private, runs in-browser."/>
   <meta property="og:image" content="https://mrlipx.github.io/base64-image-converter/assets/og-image-to-base64.png"/>
   <meta property="og:site_name" content="Base64 Image Converter"/>
   <meta name="twitter:card" content="summary_large_image"/>
@@ -53,11 +53,11 @@
       Image → Base64
     </div>
     <h1>Image to Base64 Converter</h1>
-    <p class="hero-desc">Upload, drag-and-drop, or paste an image from your clipboard and instantly get its Base64 string or Data URL. One-click copy.</p>
+    <p class="hero-desc">Upload, drag-and-drop, paste, or import from a URL — instantly get the Base64 string or Data URL. One-click copy.</p>
     <div class="hero-chips" role="list">
       <span class="chip" role="listitem"><span class="chip-dot"></span>No upload to server</span>
       <span class="chip" role="listitem"><i class="fi fi-rr-paste" aria-hidden="true"></i> Paste from clipboard</span>
-      <span class="chip" role="listitem"><i class="fi fi-rr-code-window" aria-hidden="true"></i> Data URL or Raw Base64</span>
+      <span class="chip" role="listitem"><i class="fi fi-rr-link" aria-hidden="true"></i> Import from URL</span>
     </div>
   </div>
 
@@ -67,23 +67,57 @@
       <div class="card-icon" aria-hidden="true"><i class="fi fi-rr-upload"></i></div>
       <div>
         <div class="card-title">Convert Image → Base64</div>
-        <div class="card-subtitle">Drop, click, paste, or use <code>?import=&lt;url&gt;</code> to auto-load</div>
+        <div class="card-subtitle">Drop, click, paste from clipboard, or import from a URL</div>
       </div>
     </div>
 
-    <!-- Preview image using blob: URL src — big, clickable, opens in new tab -->
+    <!-- Preview image — blob: URL src, clickable to open in new tab -->
     <img id="dz-thumb" class="dz-thumb" alt="Preview of selected image" style="display:none"/>
 
     <!-- Blob URL link -->
     <div id="blob-link-wrap" aria-label="Blob preview URL" style="display:none"></div>
 
-    <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop image here or click to browse" style="margin-top:1rem">
+    <!-- Drop zone -->
+    <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop image here or click to browse">
       <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])" aria-label="Select image file"/>
       <div class="dz-icon-wrap" aria-hidden="true"><i class="fi fi-rr-upload"></i></div>
       <div class="dz-title">Drop image here, or <span class="dz-link">click to browse</span></div>
       <div class="dz-sub">PNG, JPEG, GIF, WebP, SVG, BMP, ICO &mdash; max 10 MB &mdash; or paste from clipboard</div>
     </div>
 
+    <!-- URL import toggle button -->
+    <div style="margin-top:.75rem">
+      <button id="url-import-toggle" class="btn btn-ghost btn-sm" type="button"
+              aria-expanded="false" aria-controls="url-import-row"
+              style="font-size:.8125rem;padding:.35rem .85rem;">
+        <i class="fi fi-rr-link" aria-hidden="true"></i> Import from URL
+      </button>
+    </div>
+
+    <!-- URL import row (hidden by default, shown on toggle or ?import= param) -->
+    <div id="url-import-row" style="display:none;margin-top:.75rem" role="group" aria-label="Import image from URL">
+      <div class="url-import-wrap">
+        <input
+          id="url-import-input"
+          class="url-import-input"
+          type="url"
+          placeholder="https://example.com/image.png"
+          aria-label="Image URL to import"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="url-import-btn" class="btn btn-primary btn-sm url-import-submit" type="button" aria-label="Import image from URL">
+          <i class="fi fi-rr-download" aria-hidden="true"></i> Import
+        </button>
+      </div>
+      <p class="url-import-hint">
+        <i class="fi fi-rr-info" aria-hidden="true"></i>
+        Paste any public image URL. CORS-blocked URLs are automatically retried via a proxy.
+        You can also share links using <code>?import=&lt;url&gt;</code>.
+      </p>
+    </div>
+
+    <!-- Format toggle -->
     <div style="margin-top:1rem">
       <span class="field-label" id="fmt-label">Output Format</span>
       <div class="fmt-toggle" role="radiogroup" aria-labelledby="fmt-label">
@@ -130,17 +164,17 @@
       <article class="feat-card" role="listitem">
         <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-link"></i></div>
         <h3>Import from URL</h3>
-        <p>Add <code>?import=https://example.com/image.png</code> to the page URL to auto-load any image. The param is removed from the address bar after loading.</p>
+        <p>Paste any public image URL to fetch and convert it instantly. CORS-blocked URLs are retried automatically via a proxy. Share links with <code>?import=&lt;url&gt;</code>.</p>
       </article>
       <article class="feat-card" role="listitem">
         <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-copy"></i></div>
         <h3>One-click copy</h3>
-        <p>Copy the entire output to clipboard instantly. Uses <code>navigator.clipboard</code> API with a graceful fallback.</p>
+        <p>Copy the entire output to clipboard instantly. Uses <code>navigator.clipboard</code> with a graceful fallback.</p>
       </article>
       <article class="feat-card" role="listitem">
         <div class="feat-icon" aria-hidden="true"><i class="fi fi-rr-shield-check"></i></div>
         <h3>100% private</h3>
-        <p>Uses the <code>FileReader</code> API locally. Your image is never uploaded or stored anywhere.</p>
+        <p>Processing uses the <code>FileReader</code> API locally. Your image data is never stored or uploaded anywhere.</p>
       </article>
     </div>
   </section>

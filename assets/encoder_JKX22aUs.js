@@ -1,7 +1,8 @@
 /* ================================================================
    encoder.js — Image → Base64 converter logic
-   Supports ?import=<url> query param to auto-load an image from URL.
-   Preview uses a regular <img> tag with blob: URL src.
+   - Drag/drop, file picker, clipboard paste
+   - URL import via UI input or ?import=<url> query param
+   - CORS fallback via allorigins.win proxy
    ================================================================ */
 (function () {
   'use strict';
@@ -10,8 +11,17 @@
   var _blobUrl = null;
   var _fmt     = 'dataurl';
 
-  /* ── Drop zone setup ── */
+  var PROXY = 'https://api.allorigins.win/raw?url=';
+
+  /* ── DOMContentLoaded ── */
   document.addEventListener('DOMContentLoaded', function () {
+    setupDropzone();
+    setupUrlImport();
+    checkImportParam();
+  });
+
+  /* ── Dropzone ── */
+  function setupDropzone() {
     var dz = document.getElementById('dropzone');
     if (!dz) return;
 
@@ -33,7 +43,6 @@
       }
     });
 
-    /* Paste image from clipboard */
     document.addEventListener('paste', function (e) {
       var items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData) || {}).items || [];
       for (var i = 0; i < items.length; i++) {
@@ -42,74 +51,154 @@
         }
       }
     });
+  }
 
-    /* ── Handle ?import=<url> query parameter ── */
-    checkImportParam();
-  });
+  /* ── URL import UI ── */
+  function setupUrlImport() {
+    var btn   = document.getElementById('url-import-btn');
+    var input = document.getElementById('url-import-input');
+    if (!btn || !input) return;
 
-  /* ── Auto-import from ?import= URL param ── */
-  function checkImportParam() {
-    var params = new URLSearchParams(window.location.search);
-    var importUrl = params.get('import');
-    if (!importUrl) return;
+    btn.addEventListener('click', function () {
+      triggerUrlImport(input.value.trim());
+    });
 
-    /* Remove ?import= from the address bar immediately — clean URL */
-    try {
-      var clean = window.location.pathname + window.location.hash;
-      history.replaceState(null, '', clean);
-    } catch (e) { /* ignore */ }
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); triggerUrlImport(input.value.trim()); }
+    });
 
-    showToast('Loading image from URL\u2026', 'info');
+    /* Show/hide the URL import row */
+    var toggle = document.getElementById('url-import-toggle');
+    var row    = document.getElementById('url-import-row');
+    if (toggle && row) {
+      toggle.addEventListener('click', function () {
+        var open = row.style.display !== 'none';
+        row.style.display = open ? 'none' : '';
+        toggle.setAttribute('aria-expanded', String(!open));
+        if (!open) input.focus();
+      });
+    }
+  }
 
-    fetch(importUrl)
+  /* ── Fetch image from URL with CORS fallback ── */
+  function triggerUrlImport(url) {
+    if (!url) { showToast('Paste an image URL first', 'error'); return; }
+
+    /* Basic URL validation */
+    try { new URL(url); } catch (e) {
+      showToast('Invalid URL \u2014 make sure it starts with https://', 'error');
+      return;
+    }
+
+    setUrlImportLoading(true);
+    showToast('Fetching image\u2026', 'info');
+
+    fetchWithFallback(url)
+      .then(function (blob) {
+        if (!blob.type.startsWith('image/')) {
+          /* Try to guess from URL extension */
+          var ext = url.split('.').pop().toLowerCase().split('?')[0];
+          var mimeMap = { jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png',
+                          gif:'image/gif', webp:'image/webp', svg:'image/svg+xml',
+                          bmp:'image/bmp', ico:'image/x-icon' };
+          var guessed = mimeMap[ext] || 'image/png';
+          blob = blob.slice(0, blob.size, guessed);
+        }
+        if (!blob.type.startsWith('image/')) {
+          throw new Error('URL does not appear to be an image');
+        }
+        var filename = url.split('/').pop().split('?')[0] || 'imported-image';
+        var file = new File([blob], filename, { type: blob.type });
+        handleFile(file);
+
+        /* Clear the input after success */
+        var input = document.getElementById('url-import-input');
+        if (input) input.value = '';
+      })
+      .catch(function (err) {
+        showToast('Import failed: ' + err.message, 'error');
+        setUrlImportLoading(false);
+      });
+  }
+
+  /* Try direct fetch first, fall back to allorigins proxy on CORS/network error */
+  function fetchWithFallback(url) {
+    return fetch(url, { mode: 'cors' })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.blob();
       })
-      .then(function (blob) {
-        /* Treat the fetched blob as if it were a dropped file */
-        var mime = blob.type || 'image/png';
-        var filename = importUrl.split('/').pop().split('?')[0] || 'imported-image';
-        var file = new File([blob], filename, { type: mime });
-        handleFile(file);
-      })
-      .catch(function (err) {
-        showToast('Could not load image: ' + err.message, 'error');
+      .catch(function () {
+        /* CORS blocked or network error — try the proxy */
+        return fetch(PROXY + encodeURIComponent(url))
+          .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' (via proxy)');
+            return res.blob();
+          });
       });
   }
 
-  /* ── Handle file (from drop, click, paste, or URL import) ── */
+  function setUrlImportLoading(on) {
+    var btn = document.getElementById('url-import-btn');
+    if (!btn) return;
+    btn.disabled = on;
+    btn.innerHTML = on
+      ? '<i class="fi fi-rr-spinner" aria-hidden="true"></i> Loading\u2026'
+      : '<i class="fi fi-rr-download" aria-hidden="true"></i> Import';
+  }
+
+  /* ── Auto-import from ?import= query param ── */
+  function checkImportParam() {
+    var params    = new URLSearchParams(window.location.search);
+    var importUrl = params.get('import');
+    if (!importUrl) return;
+
+    /* Strip ?import= from the address bar immediately — clean URL, no reload */
+    try {
+      history.replaceState(null, '', window.location.pathname + window.location.hash);
+    } catch (e) { /* ignore in sandboxed environments */ }
+
+    /* Populate the input with the URL so the user can see what was imported */
+    var input = document.getElementById('url-import-input');
+    if (input) input.value = importUrl;
+
+    /* Open the URL import row so it's visible */
+    var row = document.getElementById('url-import-row');
+    if (row) row.style.display = '';
+    var toggle = document.getElementById('url-import-toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+
+    triggerUrlImport(importUrl);
+  }
+
+  /* ── Handle file ── */
   function handleFile(file) {
     if (!file) return;
+    setUrlImportLoading(false);
+
     if (!file.type.startsWith('image/')) {
-      showToast('Please select an image file', 'error'); return;
+      showToast('Not an image \u2014 only PNG, JPEG, GIF, WebP, SVG, BMP, ICO are supported', 'error');
+      return;
     }
     if (file.size > 10 * 1024 * 1024) {
       showToast('File too large \u2014 max 10 MB', 'error'); return;
     }
 
-    /* Revoke previous blob URL */
     if (_blobUrl) { URL.revokeObjectURL(_blobUrl); _blobUrl = null; }
-
-    /* Create blob: URL — used for the <img> src, instant render */
     _blobUrl = URL.createObjectURL(file);
 
-    /* Show <img> preview immediately using blob: URL */
     var thumb = document.getElementById('dz-thumb');
-    thumb.src   = _blobUrl;
+    thumb.src          = _blobUrl;
     thumb.style.display = 'block';
     thumb.style.cursor  = 'pointer';
-    thumb.title = 'Click to open in new tab';
-    thumb.onclick = function () {
-      window.open(_blobUrl, '_blank', 'noopener,noreferrer');
-    };
+    thumb.title         = 'Click to open in new tab';
+    thumb.onclick = function () { window.open(_blobUrl, '_blank', 'noopener,noreferrer'); };
 
     renderBlobLink(_blobUrl);
 
     var dzTitle = document.querySelector('.dz-title');
     if (dzTitle) dzTitle.textContent = file.name;
 
-    /* FileReader runs in background to produce the base64 output */
     var reader = new FileReader();
     reader.onload = function (e) {
       _dataUrl = e.target.result;
@@ -121,7 +210,7 @@
         : (file.size / 1048576).toFixed(1) + ' MB';
       showToast('Image loaded \u2014 ' + sizeStr, 'success');
     };
-    reader.onerror = function () { showToast('Failed to read file', 'error'); };
+    reader.onerror = function () { showToast('Failed to read the image file', 'error'); };
     reader.readAsDataURL(file);
   }
 
@@ -154,8 +243,7 @@
     if (!_dataUrl) return;
     var out = _fmt === 'raw' && _dataUrl.includes(',')
       ? _dataUrl.split(',')[1] : _dataUrl;
-    var ta = document.getElementById('b64output');
-    ta.value = out;
+    document.getElementById('b64output').value = out;
     var len = out.length;
     document.getElementById('char-count').textContent =
       len.toLocaleString() + ' characters (\u2248' +
@@ -198,6 +286,7 @@
     document.querySelectorAll('.fmt-toggle label').forEach(function (l) {
       l.classList.toggle('active', l.dataset.val === 'dataurl');
     });
+    setUrlImportLoading(false);
   };
 
   window.addEventListener('beforeunload', function () {
